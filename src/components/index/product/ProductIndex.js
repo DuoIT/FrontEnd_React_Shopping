@@ -48,7 +48,8 @@ class ProductIndex extends Component {
             const all = this.state.products;
             this.setState({viewProduct: all});
         }
-
+        
+        console.log(this.state.products);
         return (
                 <div className="section">
                 {/* container */}
