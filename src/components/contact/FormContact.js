@@ -34,7 +34,7 @@ class FormContact extends Component {
         }
         Axios.post('http://localhost:3000/contact', contact)
         .then(function (response) {
-            console.log(response);
+            console.log(response.data);
         })
         .catch(function (error) {
             console.log(error);

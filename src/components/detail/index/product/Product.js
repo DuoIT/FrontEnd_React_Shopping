@@ -1,47 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
-import Axios from 'axios';
-import jwt from 'jsonwebtoken';
-import Redirect from 'react-router-dom/Redirect'
-
 
 class Product extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user : undefined
-        }
-    }
-    
-    decode = () => {
-        var token = localStorage.getItem('access_token');
-        return jwt.verify(token, 'keyBaoMat', function(err, decoded) {
-            return decoded;
-        });
-    }    
-    checkDangNhap = () => {
-        if(localStorage.getItem('access_token')) {
-            return 1;
-        }
-        return 0;
-    }
-
-    addToCart = (id) => {
-        console.log(id);        
-        if(this.checkDangNhap() === 0) {
-            return <Redirect to="/user/signin" />
-        } else {
-            const user = this.decode();
-            console.log(user);
-            Axios.post('http://localhost:3000/add-to-cart/'+this.props.id, { "userId" : user._id, "total" : 1})
-            .then(res => {
-                console.log(res.status);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        }
-    }
     render() {
         return (
             <div className="col-md-3">
@@ -60,9 +20,9 @@ class Product extends Component {
                         </div>
                     </div>
                     <div className="add-to-cart">
-                        {/* <Link to={"/add-to-cart/" + this.props.id}> */}
-                            <button onClick={() => this.addToCart(this.props.id)} className="add-to-cart-btn"><i className="fa fa-shopping-cart" /> add to cart</button>
-                        {/* </Link> */}
+                        <Link to={"/add-to-cart/" + this.props.id}>
+                            <button className="add-to-cart-btn"><i className="fa fa-shopping-cart" /> add to cart</button>
+                        </Link>
                     </div>
                 </div>
             </div>

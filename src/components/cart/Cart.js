@@ -1,9 +1,27 @@
 import React, { Component } from 'react';
+import jwt from 'jsonwebtoken';
+import Redirect from 'react-router-dom/Redirect'
 
 class Cart extends Component {
+    constructor(props) {
+        super(props);     
+    }
+
+    decode = () => {
+        var token = localStorage.getItem('access_token');
+        return jwt.verify(token, 'keyBaoMat', function(err, decoded) {
+            return decoded;
+        });
+    }
+    
+    
+
     render() {
+        if(!localStorage.getItem('access_token')) {
+            return <Redirect to="/user/signin" />
+        }
         return (
-            <div>
+            <div>         
                 <div>
                     <div className="bg-light py-3">
                         <div className="container">
@@ -17,41 +35,42 @@ class Cart extends Component {
                         <div className="container">
                         <div className="row mb-5">
                             <form className="col-md-12" method="post">
-                            <div className="site-blocks-table">
-                                
+                            <div className="site-blocks-table">                                
                                 <table className="table table-bordered">
-                                <thead> 
-                                    <tr>
-                                    <th className="product-thumbnail">Image</th>
-                                    <th className="product-name" style={{maxWidth: '350px'}}>Product</th>
-                                    <th className="product-price" style={{minWidth: '150px'}}>Price</th>
-                                    <th className="product-quantity" style={{minWidth: '150px'}}>Quantity</th>
-                                    <th className="product-total" style={{minWidth: '150px'}}>Total</th>
-                                    <th className="product-remove">Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody><tr>
-                                    <td className="product-thumbnail">
-                                        <img src="{{this.item.img}}" alt="Image" className="img-fluid" />
-                                    </td>
-                                    <td className="product-name" style={{maxWidth: '350px'}}>
-                                        <h2 className="h5 text-black">{this.props.name}</h2>
-                                    </td>
-                                    <td className="money" style={{minWidth: '150px'}}>{this.props.}</td>
-                                    <td style={{minWidth: '150px'}}>
-                                        <div className="input-group mb-3" style={{maxWidth: '120px'}}>
-                                        <div className="input-group-prepend">
-                                            <button className="btn btn-outline-primary js-btn-minus" type="button">−</button>
-                                        </div>
-                                        <input type="text" className="form-control text-center" defaultValue="{{qty}}" placeholder aria-label="Example text with button addon" aria-describedby="button-addon1" />
-                                        <div className="input-group-append">
-                                            <button className="btn btn-outline-primary js-btn-plus" type="button">+</button>
-                                        </div>
-                                        </div>
-                                    </td>
-                                    <td className="money">{'{'}{'{'}price{'}'}{'}'}</td>
-                                    <td><a href="#" className="btn btn-primary btn-sm">X</a></td>
-                                    </tr></tbody>
+                                    <thead> 
+                                        <tr>
+                                            <th className="product-thumbnail">Image</th>
+                                            <th className="product-name" style={{maxWidth: '350px'}}>Product</th>
+                                            <th className="product-price" style={{minWidth: '150px'}}>Price</th>
+                                            <th className="product-quantity" style={{minWidth: '150px'}}>Quantity</th>
+                                            <th className="product-total" style={{minWidth: '150px'}}>Total</th>
+                                            <th className="product-remove">Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="product-thumbnail">
+                                                <img src="{{this.item.img}}" alt="Image" className="img-fluid" />
+                                            </td>
+                                            <td className="product-name" style={{maxWidth: '350px'}}>
+                                                <h2 className="h5 text-black">{this.props.name}</h2>
+                                            </td>
+                                            <td className="money" style={{minWidth: '150px'}}></td>
+                                            <td style={{minWidth: '150px'}}>
+                                                <div className="input-group mb-3" style={{maxWidth: '120px'}}>
+                                                <div className="input-group-prepend">
+                                                    <button className="btn btn-outline-primary js-btn-minus" type="button">−</button>
+                                                </div>
+                                                <input type="text" className="form-control text-center" defaultValue="{{qty}}" placeholder aria-label="Example text with button addon" aria-describedby="button-addon1" />
+                                                <div className="input-group-append">
+                                                    <button className="btn btn-outline-primary js-btn-plus" type="button">+</button>
+                                                </div>
+                                                </div>
+                                            </td>
+                                            <td className="money">{'{'}{'{'}price{'}'}{'}'}</td>
+                                            <td><a href="#" className="btn btn-primary btn-sm">X</a></td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                             </form>
