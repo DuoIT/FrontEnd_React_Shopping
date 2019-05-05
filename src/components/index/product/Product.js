@@ -9,31 +9,42 @@ class Product extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            redirect : false,
             user : undefined
         }
     }
+    getCookie = (cname) => {
+        var name = cname + '=';
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return '';
+    }
     
     decode = () => {
-        var token = localStorage.getItem('access_token');
+        var token = this.getCookie('access_token');
         return jwt.verify(token, 'keyBaoMat', function(err, decoded) {
             return decoded;
-        });
-    }    
-    checkDangNhap = () => {
-        if(localStorage.getItem('access_token')) {
-            return 1;
-        }
-        return 0;
+        })
+        
     }
 
     addToCart = (id) => {
-        console.log(id);        
-        if(this.checkDangNhap() === 0) {
-            return <Redirect to="/user/signin" />
-        } else {
+        if(this.getCookie('access_token') === '') {
+            console.log('Chua dang nhap');
+            return this.setState({redirect : true})
+        }  else {
             const user = this.decode();
             console.log(user);
-            Axios.post('http://localhost:3000/add-to-cart/'+this.props.id, { "userId" : user._id, "total" : 1})
+            return Axios.post('http://localhost:3000/add-to-cart/'+this.props.id, { "userId" : user._id, "total" : 1})
             .then(res => {
                 console.log(res.status);
             })
@@ -43,6 +54,9 @@ class Product extends Component {
         }
     }
     render() {
+        if(this.state.redirect) {
+            return <Redirect to='/user/signin' />
+        }      
         return (
             <div className="col-md-3">
                 <div className="product">
@@ -59,10 +73,8 @@ class Product extends Component {
                             <button className="quick-view"><i className="fa fa-eye" /><span className="tooltipp">quick view</span></button>
                         </div>
                     </div>
-                    <div className="add-to-cart">
-                        {/* <Link to={"/add-to-cart/" + this.props.id}> */}
-                            <button onClick={() => this.addToCart(this.props.id)} className="add-to-cart-btn"><i className="fa fa-shopping-cart" /> add to cart</button>
-                        {/* </Link> */}
+                    <div className="add-to-cart">                        
+                        <button onClick={() => this.addToCart(this.props.id)} className="add-to-cart-btn"><i className="fa fa-shopping-cart" /> add to cart</button>
                     </div>
                 </div>
             </div>

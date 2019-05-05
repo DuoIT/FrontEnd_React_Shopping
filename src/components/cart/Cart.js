@@ -1,25 +1,82 @@
 import React, { Component } from 'react';
 import jwt from 'jsonwebtoken';
 import Redirect from 'react-router-dom/Redirect'
+import Axios from 'axios';
+import ProductCart from './ProductCart';
 
 class Cart extends Component {
     constructor(props) {
-        super(props);     
+        super(props);
+        this.state = {
+            userId : '',
+            cart : [],
+            infoProduct : {}
+        }
+        // this.getCart = this.getCart.bind(this);
+        this.showCart();
+    }
+
+    getCookie = (cname) => {
+        var name = cname + '=';
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return '';
     }
 
     decode = () => {
-        var token = localStorage.getItem('access_token');
+        var token = this.getCookie('access_token');
         return jwt.verify(token, 'keyBaoMat', function(err, decoded) {
             return decoded;
         });
+    } 
+
+    getCart= async () => {
+        await Axios.post('http://localhost:3000/cart', {userId: this.decode()._id})
+        .then(doc => {
+            return this.setState({
+                cart : doc.data.cart
+            })
+        })
+        .catch(err => {
+            if(err) {
+                console.log(err);
+            }
+        })
     }
     
-    
+    showCart = () => {
+        this.getCart();
+        console.log(this.state.cart);
+        this.state.cart.map(product => {
+            console.log(this.state.infoProduct);
+            return this.getInfoProduct(product.productId);
+        });
+    }
 
     render() {
-        if(!localStorage.getItem('access_token')) {
+        if(this.getCookie('access_token') === '') {
             return <Redirect to="/user/signin" />
         }
+        console.log(this.state.cart);
+        var product = this.state.cart.map(doc => {
+            return <ProductCart 
+                        img={doc.img} 
+                        name={doc.name} 
+                        price={doc.price}
+                        total={doc.total}
+
+                    />
+        });
+        console.log(product);
         return (
             <div>         
                 <div>
@@ -40,36 +97,15 @@ class Cart extends Component {
                                     <thead> 
                                         <tr>
                                             <th className="product-thumbnail">Image</th>
-                                            <th className="product-name" style={{maxWidth: '350px'}}>Product</th>
-                                            <th className="product-price" style={{minWidth: '150px'}}>Price</th>
-                                            <th className="product-quantity" style={{minWidth: '150px'}}>Quantity</th>
-                                            <th className="product-total" style={{minWidth: '150px'}}>Total</th>
+                                            <th className="product-name" >Product</th>
+                                            <th className="product-price" >Price</th>
+                                            <th className="product-quantity">Quantity</th>
+                                            <th className="product-total" >Total</th>
                                             <th className="product-remove">Remove</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td className="product-thumbnail">
-                                                <img src="{{this.item.img}}" alt="Image" className="img-fluid" />
-                                            </td>
-                                            <td className="product-name" style={{maxWidth: '350px'}}>
-                                                <h2 className="h5 text-black">{this.props.name}</h2>
-                                            </td>
-                                            <td className="money" style={{minWidth: '150px'}}></td>
-                                            <td style={{minWidth: '150px'}}>
-                                                <div className="input-group mb-3" style={{maxWidth: '120px'}}>
-                                                <div className="input-group-prepend">
-                                                    <button className="btn btn-outline-primary js-btn-minus" type="button">−</button>
-                                                </div>
-                                                <input type="text" className="form-control text-center" defaultValue="{{qty}}" placeholder aria-label="Example text with button addon" aria-describedby="button-addon1" />
-                                                <div className="input-group-append">
-                                                    <button className="btn btn-outline-primary js-btn-plus" type="button">+</button>
-                                                </div>
-                                                </div>
-                                            </td>
-                                            <td className="money">{'{'}{'{'}price{'}'}{'}'}</td>
-                                            <td><a href="#" className="btn btn-primary btn-sm">X</a></td>
-                                        </tr>
+                                        {product}
                                     </tbody>
                                 </table>
                             </div>

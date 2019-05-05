@@ -22,6 +22,7 @@ class Detail extends Component {
     }
 
     render() {
+        console.log(this.state.product);
         return (
             <div>
                 {/* BREADCRUMB */}
@@ -48,6 +49,7 @@ class Detail extends Component {
                     <div className="container">
                     {/* row */}
                     <ProductDetail 
+                        id = {this.state.product._id}
                         product = {this.state.product}
                         img={this.state.product.img} 
                         name={this.state.product.name}

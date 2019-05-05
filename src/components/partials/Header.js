@@ -22,7 +22,42 @@ class Header extends Component {
         });     
     };
     
-    render() {        
+    logout = (e) => {
+        document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+        // localStorage.removeItem('access_token');
+    }
+    getCookie = (cname) => {
+        var name = cname + '=';
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return '';
+    }
+
+    render() {  
+        var logout = undefined;      
+        if(this.getCookie('access_token') !== '') {
+            logout = (
+                <div>
+                    <li><Link to="/user/profile"><i className="fa fa-user-o" /> Profile </Link></li>
+                    <li><a onClick={e => this.logout(e)} href="/"><i className="fa fa-user-o" /> Logout</a></li>
+                </div>
+            )
+        }
+        var accout = undefined;
+        if(this.getCookie('access_token') === '') {
+            accout = (
+                <li><Link to="/user/signin"><i className="fa fa-user-o" /> SignIn </Link></li>
+            )
+        } 
         return (
             <div>
                 <header>
@@ -35,7 +70,8 @@ class Header extends Component {
                             <li><a href="/contact"><i className="fa fa-map-marker" /> 1734 Stonecoal Road</a></li>
                         </ul>
                         <ul className="header-links pull-right">
-                            <li><a href="/"><i className="fa fa-user-o" /> My Account</a></li>
+                            {accout}
+                            {logout}
                         </ul>
                         </div>
                     </div>

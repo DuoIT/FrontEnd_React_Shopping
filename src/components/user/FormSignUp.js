@@ -6,6 +6,7 @@ class FormSignUp extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isDirect : false,
             username: '',
             password: '',
             re_pass: '',
@@ -36,6 +37,9 @@ class FormSignUp extends Component {
                 status: res.status,
                 message: res.data.message
             })
+            this.setState({
+                isDirect : true
+            })
             
         })
         .catch(err => {
@@ -50,15 +54,14 @@ class FormSignUp extends Component {
         this.setState({message: []});
         
         this.postAuth();
-        console.log(this.state.status);  
+         
     }
 
     render() {
-
+        if(this.state.isDirect === true)
+            return <Redirect to="/user/signin" />   
         var message = undefined;
-        if(this.state.status === 200) { 
-            return <Redirect to="/user/signin" />         
-        } else if(this.state.status === 404) {
+        if(this.state.status === 404) {
             message = (
                 <div className="alert alert-danger">
                 {

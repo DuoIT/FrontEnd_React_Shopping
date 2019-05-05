@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
+import Redirect from 'react-router-dom/Redirect'
+
 
 class FormSignIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isDirect : false,
             username: '',
             password: '',
             status: 0,
@@ -27,8 +30,11 @@ class FormSignIn extends Component {
                 status: res.status,
                 message: res.data.access_token
             })
-            localStorage.setItem('access_token',res.data.access_token)
-            
+            document.cookie = 'access_token =' + res.data.access_token + "; max-age=10800; path=/";
+            // localStorage.setItem('access_token',res.data.access_token)
+            this.setState({
+                isDirect : true
+            });
         })
         .catch(err => {
             this.setState({
@@ -49,14 +55,15 @@ class FormSignIn extends Component {
     }
 
     render() {
+        if(this.state.isDirect === true) {
+            return <Redirect to="/" />
+        }
         return (
             <div>
                 <form action="/user/signin" method="POST" name="login">
-
                     <div className="alert alert-danger" role="alert">
-                        <p><strong>Warning! </strong> &lt;%= mess %&gt; </p> 
+                        <p><strong>Warning! </strong> Nhap day du cac thong tin </p> 
                     </div>
-
                     <div className="form-group">
                         <label htmlFor>Username</label>
                         <input onChange={(event) => this.isChange(event)} type="text" name="username" className="form-control" id="username" placeholder="Enter Username" />
