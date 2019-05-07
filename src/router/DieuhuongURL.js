@@ -6,8 +6,6 @@ import Detail from '../components/detail/Detail';
 import ProductCate from '../components/categories/ProductCate';
 import SignUp from '../components/user/SignUp';
 import SignIn from '../components/user/SignIn';
-import jwt from 'jsonwebtoken';
-import Redirect from 'react-router-dom/Redirect'
 import Cart from '../components/cart/Cart';
 
 class DieuhuongURL extends Component {

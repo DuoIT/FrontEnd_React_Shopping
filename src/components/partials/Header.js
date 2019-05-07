@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 import Axios from 'axios';
-import Cate from '../categories/Cate';
+import Cate from './Cate';
 
 class Header extends Component {
     constructor(props) {
         super(props);        
         this.state  = {
-            categories : [],
-            product : []
+            categories : []
         }
         Axios.get('http://localhost:3000/')
-        .then(cate => {
+        .then(docs => {
             this.setState({
-                categories: cate.data.cates,
-                products: cate.data.products
+                categories: docs.data.cates
             });   
         })
         .catch(function (error) {
@@ -42,137 +40,74 @@ class Header extends Component {
         return '';
     }
 
-    render() {  
-        var logout = undefined;      
-        if(this.getCookie('access_token') !== '') {
-            logout = (
-                <div>
-                    <li><Link to="/user/profile"><i className="fa fa-user-o" /> Profile </Link></li>
+    render() {
+        var user = undefined;      
+        if(this.getCookie('access_token') === '') {
+            user = (
+                <ul className="usermenu">
+                    <li><a href="/user/signin" className="log">Login</a></li>
+                    <li><a href="/user/signup" className="reg">Register</a></li>
+                </ul>
+            )
+        } else {
+            user = (
+                <ul className="usermenu">
+                    <li><a href="/user/profile" className="log">Profile</a></li>
                     <li><a onClick={e => this.logout(e)} href="/"><i className="fa fa-user-o" /> Logout</a></li>
-                </div>
+                </ul>
             )
         }
-        var accout = undefined;
-        if(this.getCookie('access_token') === '') {
-            accout = (
-                <li><Link to="/user/signin"><i className="fa fa-user-o" /> SignIn </Link></li>
-            )
-        } 
+        
         return (
-            <div>
-                <header>
-                    {/* TOP HEADER */}
-                    <div id="top-header">
-                        <div className="container">
-                        <ul className="header-links pull-left">
-                            <li><a href="/contact"><i className="fa fa-phone" /> +021-95-51-84</a></li>
-                            <li><a href="/contact"><i className="fa fa-envelope-o" /> email@email.com</a></li>
-                            <li><a href="/contact"><i className="fa fa-map-marker" /> 1734 Stonecoal Road</a></li>
-                        </ul>
-                        <ul className="header-links pull-right">
-                            {accout}
-                            {logout}
-                        </ul>
-                        </div>
-                    </div>
-                    {/* /TOP HEADER */}
-                    {/* MAIN HEADER */}
-                    <div id="header">
-                        {/* container */}
-                        <div className="container">
-                        {/* row */}
-                        <div className="row">
-                            {/* LOGO */}
-                            <div className="col-md-3">
-                            <div className="header-logo">
-                                <Link to="/" className="logo">
-                                    <img src="/img/logo.png" alt="img logo" />
-                                </Link>
-                            </div>
-                            </div>
-                            {/* /LOGO */}
-                            {/* SEARCH BAR */}
-                            <div className="col-md-6">
-                            <div className="header-search">
-                                <form>
-                                <select className="input-select">
-                                    <option value={0}>All Categories</option>
-                                    <option value={1}>Category 01</option>
-                                    <option value={1}>Category 02</option>
-                                </select>
-                                <input className="input" placeholder="Search here" />
-                                <button className="search-btn">Search</button>
-                                </form>
-                            </div>
-                            </div>
-                            {/* /SEARCH BAR */}
-                            {/* ACCOUNT */}
-                            <div className="col-md-3 clearfix">
-                            <div className="header-ctn">
-                                {/* Wishlist */}
-                                {/* <div>
-                                <a href="#">
-                                    <i className="fa fa-heart-o" />
-                                    <span>Your Wishlist</span>
-                                    <div className="qty">2</div>
-                                </a>
-                                </div> */}
-                                {/* /Wishlist */}
-                                {/* Cart */}
-                                <div className="dropdown">
-                                    <NavLink to="/cart">
-                                        <i className="fa fa-shopping-cart" />
-                                        <span>Your Cart</span>
-                                        <div className="qty">3</div>
-                                    </NavLink>                                
-                                </div>
-                                {/* /Cart */}
-                                {/* Menu Toogle */}
-                                <div className="menu-toggle">
-                                <a href="#">
-                                    <i className="fa fa-bars" />
-                                    <span>Menu</span>
-                                </a>
-                                </div>
-                                {/* /Menu Toogle */}
-                            </div>
-                            </div>
-                            {/* /ACCOUNT */}
-                        </div>
-                        {/* row */}
-                        </div>
-                        {/* container */}
-                    </div>
-                    {/* /MAIN HEADER */}
-                    </header>
-                    {/* /HEADER */}
-
-                {/* NAVIGATION */}
-                <nav id="navigation">
-                {/* container */}
+            <div className="header">
                 <div className="container">
-                    {/* responsive-nav */}
-                    <div id="responsive-nav">
-                    {/* NAV */}
-                    <ul className="main-nav nav navbar-nav">
-                        <li className="active"><NavLink to="/">Home</NavLink></li>
-                        {
-                            this.state.categories.map(cate => (
-                                <Cate 
-                                    id={cate.id} 
-                                    name={cate.name} 
-                                />
-                            ))
-                        }
-                        <li><NavLink to="/contact">Contact</NavLink></li>
-                    </ul>
-                    {/* /NAV */}
+                    <div className="row">
+                    <div className="col-md-2 col-sm-2">
+                        <div className="logo"><a href="/"><img src="/images/logo.png" alt="FlatShop" /></a></div>
                     </div>
-                    {/* /responsive-nav */}
+                    <div className="col-md-10 col-sm-10">
+                        <div className="header_top">
+                        <div className="row">
+                            <div className="col-md-12">
+                            {user}
+                            </div>
+                        </div>
+                        </div>
+                        <div className="clearfix" />
+                        <div className="header_bottom">
+                        <ul className="option">
+                            <li id="search" className="search">
+                                <form>
+                                    <input type="text" />
+                                    <input className="search-submit" type="submit"  />
+                                    {/* <input className="search-input" placeholder="Enter your search term..." type="text" defaultValue name="search" /> */}
+                                </form>
+                            </li>
+                            <li className="option-cart">
+                                <Link to="/cart" className="cart-icon">cart <span className="cart_no">02</span></Link>
+                            </li>
+                        </ul>
+                        <div className="navbar-header"><button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span className="sr-only">Toggle navigation</span><span className="icon-bar" /><span className="icon-bar" /><span className="icon-bar" /></button></div>
+                        <div className="navbar-collapse collapse">
+                            <ul className="nav navbar-nav">
+                            {/* <li className="active dropdown"> */}
+                                {/* <a href="#" className="dropdown-toggle" data-toggle="dropdown">Home</a> */}
+                            <li className="dropdown-toggle" ><NavLink to="/">Home</NavLink></li>
+                            {
+                                this.state.categories.map(cate => (
+                                    <Cate 
+                                        id={cate._id} 
+                                        name={cate.name} 
+                                    />
+                                ))
+                            }
+                            <li><NavLink to="/contact">Contact</NavLink></li>                                    
+                            </ul>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
                 </div>
-                {/* /container */}
-                </nav>
-                {/* /NAVIGATION */}
             </div>
         );
     }

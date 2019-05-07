@@ -20,8 +20,8 @@ class FormSignIn extends Component {
         const value = event.target.value;
         this.setState({[name] : value});
     }
-    postAuth = async () => {
-        await Axios.post('http://localhost:3000/user/signin', {
+    postAuth = () => {
+        Axios.post('http://localhost:3000/user/signin', {
             "username": this.state.username,
             "password": this.state.password
         })

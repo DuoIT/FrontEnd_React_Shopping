@@ -23,8 +23,8 @@ class FormSignUp extends Component {
         const value = event.target.value;
         this.setState({[name] : value});
     }
-    postAuth = async () => {
-        await Axios.post('http://localhost:3000/user/signup', {
+    postAuth = () => {
+        Axios.post('http://localhost:3000/user/signup', {
             "username": this.state.username,
             "password": this.state.password,
             "re_pass": this.state.re_pass,

@@ -8,12 +8,11 @@ class Cart extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            redirect : false,
             userId : '',
-            cart : [],
-            infoProduct : {}
+            cart : []
         }
-        // this.getCart = this.getCart.bind(this);
-        this.showCart();
+        this.getCart();
     }
 
     getCookie = (cname) => {
@@ -52,132 +51,237 @@ class Cart extends Component {
             }
         })
     }
-    
-    showCart = () => {
-        this.getCart();
-        console.log(this.state.cart);
-        this.state.cart.map(product => {
-            console.log(this.state.infoProduct);
-            return this.getInfoProduct(product.productId);
-        });
+
+    handleButtonDeleteClick = (e)=>{
+        e.forceUpdate();
+        
+    }
+
+    updateCart = () => {
+
     }
 
     render() {
+        console.log(this.state.redirect);
         if(this.getCookie('access_token') === '') {
             return <Redirect to="/user/signin" />
         }
         console.log(this.state.cart);
-        var product = this.state.cart.map(doc => {
+        var total = 0;
+        const product = this.state.cart.map(doc => {
+            total += doc.price*doc.qty;
             return <ProductCart 
                         img={doc.img} 
                         name={doc.name} 
                         price={doc.price}
-                        total={doc.total}
-
+                        qty={doc.qty}
+                        productId = {doc.productId}
+                        userId = {this.decode()._id}
+                        cartId = {doc._id}
+                        handleButtonDeleteClick = {() => this.handleButtonDeleteClick()}
                     />
         });
-        console.log(product);
+        console.log(total);
         return (
-            <div>         
-                <div>
-                    <div className="bg-light py-3">
-                        <div className="container">
+            <div>
+                <div className="clearfix">
+                </div>
+                <div className="container_fullwidth">
+                    <div className="container shopping-cart">
+                    <div className="row">
+                        <div className="col-md-12">
+                        <h3 className="title">
+                            Shopping Cart
+                        </h3>
+                        <div className="clearfix">
+                        </div>
+                        <table className="shop-table">
+                            <thead>
+                                <tr>
+                                <th>
+                                Image
+                                </th>
+                                <th>
+                                Detail
+                                </th>
+                                <th>
+                                Price
+                                </th>
+                                <th>
+                                Quantity
+                                </th>
+                                <th>
+                                Price
+                                </th>
+                                <th>
+                                Delete
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {product}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colSpan={6}>
+                                <button className="pull-left">
+                                    Continue Shopping
+                                </button>
+                                {/* <button className=" pull-right">
+                                    Update Shopping Cart
+                                </button> */}
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        <div className="clearfix">
+                        </div>
                         <div className="row">
-                            <div className="col-md-12 mb-0"><a href="/">Home</a> <span className="mx-2 mb-0">/</span> <strong className="text-black">Cart</strong></div>
+                            <div className="col-md-4 col-sm-6">
+                            <div className="shippingbox">
+                                <h5>
+                                Discount Codes
+                                </h5>
+                                <form>
+                                <label>
+                                    Enter your coupon code if you have one
+                                </label>
+                                <input type="text" name />
+                                <div className="clearfix">
+                                </div>
+                                <button>
+                                    Get A Qoute
+                                </button>
+                                </form>
+                            </div>
+                            </div>
+                            <div className="col-md-4 col-sm-6 pull-right">
+                            <div className="shippingbox">
+                                <div className="subtotal">
+                                <h5>
+                                    Sub Total
+                                </h5>
+                                <span>
+                                    {total}
+                                </span>
+                                </div>
+                                <div className="grandtotal">
+                                <h5>
+                                    GRAND TOTAL 
+                                </h5>
+                                <span>
+                                    {total}
+                                </span>
+                                </div>
+                                <button>
+                                Process To Checkout
+                                </button>
+                            </div>
+                            </div>
                         </div>
                         </div>
                     </div>
-                    
-                    <div className="site-section">
-                        <div className="container">
-                        <div className="row mb-5">
-                            <form className="col-md-12" method="post">
-                            <div className="site-blocks-table">                                
-                                <table className="table table-bordered">
-                                    <thead> 
-                                        <tr>
-                                            <th className="product-thumbnail">Image</th>
-                                            <th className="product-name" >Product</th>
-                                            <th className="product-price" >Price</th>
-                                            <th className="product-quantity">Quantity</th>
-                                            <th className="product-total" >Total</th>
-                                            <th className="product-remove">Remove</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {product}
-                                    </tbody>
-                                </table>
-                            </div>
-                            </form>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-6">
-                            <div className="row mb-5">
-                                <div className="col-md-6 mb-3 mb-md-0">
-                                <button className="btn btn-primary btn-sm btn-block">Update Cart</button>
-                                </div>
-                                <div className="col-md-6">
-                                <button className="btn btn-outline-primary btn-sm btn-block">Continue Shopping</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-12">
-                                <label className="text-black h4" htmlFor="coupon">Coupon</label>
-                                <p>Enter your coupon code if you have one.</p>
-                                </div>
-                                <div className="col-md-8 mb-3 mb-md-0">
-                                <input type="text" className="form-control py-3" id="coupon" placeholder="Coupon Code" />
-                                </div>
-                                <div className="col-md-4">
-                                <button className="btn btn-primary btn-sm">Apply Coupon</button>
-                                </div>
-                            </div>
-                            </div>
-                            <div className="col-md-6 pl-5">
-                            <div className="row justify-content-end">
-                                <div className="col-md-7">
-                                <div className="row">
-                                    <div className="col-md-12 text-right border-bottom mb-5">
-                                    <h3 className="text-black h4 text-uppercase">Cart Totals</h3>
-                                    </div>
-                                </div>
-                                <div className="row mb-3">
-                                    <div className="col-md-6">
-                                    <span className="text-black">Subtotal</span>
-                                    </div>
-                                    <div className="col-md-6 text-right">
-                                    <strong className="text-black">$230.00</strong>
-                                    </div>
-                                </div>
-                                <div className="row mb-5">
-                                    <div className="col-md-6">
-                                    <span className="text-black">Total</span>
-                                    </div>
-                                    <div className="col-md-6 text-right">
-                                    <strong className="text-black">$230.00</strong>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                    <button className="btn btn-primary btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                        
-                        {/* <div className="site-section">
-                        <div className="container">
-                            <div className="row mb-5">
-                            <h1>Cart empty</h1>
-                            </div>
-                        </div>
-                        </div> */}
-                        
+                    <div className="clearfix">
                     </div>
+                    <div className="our-brand">
+                        <h3 className="title">
+                        <strong>
+                            Our 
+                        </strong>
+                        Brands
+                        </h3>
+                        <div className="control">
+                        <a id="prev_brand" className="prev" href="#">
+                            &lt;
+                        </a>
+                        <a id="next_brand" className="next" href="#">
+                            &gt;
+                        </a>
+                        </div>
+                        <ul id="braldLogo">
+                        <li>
+                            <ul className="brand_item">
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/envato.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/themeforest.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/photodune.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/activeden.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/envato.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <ul className="brand_item">
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/envato.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/themeforest.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/photodune.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/activeden.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <div className="brand-logo">
+                                    <img src="images/envato.png" alt />
+                                </div>
+                                </a>
+                            </li>
+                            </ul>
+                        </li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+                <div className="clearfix">
                 </div>
             </div>
         );
