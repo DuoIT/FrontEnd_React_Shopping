@@ -60,7 +60,7 @@ class Product extends Component {
             return <Redirect to='/user/signin' />
         }
         return (
-            <div className="col-md-4 col-sm-6">
+            <div className="col-md-4 col-sm-6" style={{maxWidth: '262.5px'}} >
                 <div className="products">
                     <div className="thumbnail">
                         <Link to={"/detail/"+ this.props.id}>

@@ -46,7 +46,7 @@ class SearchProduct extends Component {
                     <div className="container">
                     <div className="row">
                         
-                        <div className="col-md-9">
+                        <div className="col-md-12">
                             <div className="banner">
                                 <div className="bannerslide" id="bannerslide">
                                     <ul className="slides">
@@ -157,35 +157,35 @@ class SearchProduct extends Component {
                             <li>
                                 <a href="#">
                                 <div className="brand-logo">
-                                    <img src="images/envato.png" alt />
+                                    <img src="/images/envato.png" alt />
                                 </div>
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
                                 <div className="brand-logo">
-                                    <img src="images/themeforest.png" alt />
+                                    <img src="/images/themeforest.png" alt />
                                 </div>
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
                                 <div className="brand-logo">
-                                    <img src="images/photodune.png" alt />
+                                    <img src="/images/photodune.png" alt />
                                 </div>
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
                                 <div className="brand-logo">
-                                    <img src="images/activeden.png" alt />
+                                    <img src="/images/activeden.png" alt />
                                 </div>
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
                                 <div className="brand-logo">
-                                    <img src="images/envato.png" alt />
+                                    <img src="/images/envato.png" alt />
                                 </div>
                                 </a>
                             </li>
@@ -196,14 +196,14 @@ class SearchProduct extends Component {
                             <li>
                                 <a href="#">
                                 <div className="brand-logo">
-                                    <img src="images/envato.png" alt />
+                                    <img src="/images/envato.png" alt />
                                 </div>
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
                                 <div className="brand-logo">
-                                    <img src="images/themeforest.png" alt />
+                                    <img src="/images/themeforest.png" alt />
                                 </div>
                                 </a>
                             </li>

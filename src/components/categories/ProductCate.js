@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import Product from './Product';
+import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 
 class ProductCate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products : []
+            products : [],
+            showProduct : [],
+            currentPage: 1,
+            todosPerPage: 2
         }
         // this.getArrProduct();
         Axios.get('http://localhost:3000/cates/'+this.props.match.params.id)
@@ -18,24 +22,72 @@ class ProductCate extends Component {
         .catch(err => {
             console.log(err);
         })
-    }     
 
-    render() {
-        console.log(this.state.products);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(event) {
+        this.setState({ currentPage: Number(event.target.id) });
+    }
+
+    chiatrang = () => {
         var showProduct = [];
         const chunk = 4;
         for(var i = 0; i< this.state.products.length; i+= chunk) {
             showProduct.push(this.state.products.slice(i, i+chunk));
         }
-        
-        const show = (
+        return showProduct;
+    }
+
+    show = () => {
+        const showProduct = this.chiatrang();
+        return (
             showProduct.map(products => {
                 return products.map(product => {
                     return <Product img={product.img} name={product.name} price={product.price} id={product._id}  />
                 })
             })       
         )
-        return (
+    }
+
+    render() {
+        console.log(this.state.products);
+        const { products, currentPage, todosPerPage } = this.state;
+
+        // Logic for displaying current todos
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentTodos = products.slice(indexOfFirstTodo, indexOfLastTodo);
+
+        const renderTodos = currentTodos.map((todo, index) => {
+            return <li key={index}>{todo}</li>;
+        });
+
+        // Logic for displaying page numbers
+        const pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(products.length / todosPerPage); i++) {
+          pageNumbers.push(i);
+        }
+
+        const renderPageNumbers = pageNumbers.map(number => {
+          return (
+            //   <input key={number} type='submit' id={number} onClick={this.handleClick} value={number} />
+            <Link key={number} id={number} onClick={this.handleClick} to="#">
+            {number}
+            </Link>
+
+            // <li
+            //   key={number}
+            //   id={number}
+            //   onClick={this.handleClick}
+            // >
+            //   {number}
+            // </li>
+          );
+        });
+
+
+        return (   
             <div>
                 <div className="clearfix">
                 </div>
@@ -357,132 +409,47 @@ class ProductCate extends Component {
                         </div>
                         <div className="clearfix">
                         </div>
-                        <div className="products-grid">
-                            <div className="toolbar">
-                            <div className="sorter">
-                                <div className="view-mode">
-                                <a href="productlitst.html" className="list">
-                                    List
-                                </a>
-                                <a href="#" className="grid active">
-                                    Grid
-                                </a>
-                                </div>
-                                <div className="sort-by">
-                                Sort by : 
-                                <select name>
-                                    <option value="Default" selected>
-                                    Default
-                                    </option>
-                                    <option value="Name">
-                                    Name
-                                    </option>
-                                    <option value="Price">
-                                    Price
-                                    </option>
-                                </select>
-                                </div>
-                                <div className="limiter">
-                                Show : 
-                                <select name>
-                                    <option value={3} selected>
-                                    3
-                                    </option>
-                                    <option value={6}>
-                                    6
-                                    </option>
-                                    <option value={9}>
-                                    9
-                                    </option>
-                                </select>
-                                </div>
-                            </div>
-                            <div className="pager">
-                                <a href="#" className="prev-page">
-                                <i className="fa fa-angle-left">
-                                </i>
-                                </a>
-                                <a href="#" className="active">
-                                1
-                                </a>
-                                <a href="#">
-                                2
-                                </a>
-                                <a href="#">
-                                3
-                                </a>
-                                <a href="#" className="next-page">
-                                <i className="fa fa-angle-right">
-                                </i>
-                                </a>
-                            </div>
-                            </div>
+                        <div className="products-grid">                            
                             <div className="clearfix">
                             </div>
                             <div className="row">
-                                {show}
+                                {/* {this.show()} */}
+
+                                {/* <ul> */}
+                                {
+                                    currentTodos.map((product,index) =>{
+                                        return <Product img={product.img} name={product.name} price={product.price} id={product._id}  />
+                                    })
+                                }
+                                {/* </ul> */}
+
                             </div>
                             <div className="clearfix">
                             </div>
-                            {/* <div className="toolbar">
-                            <div className="sorter bottom">
-                                <div className="view-mode">
-                                <a href="productlitst.html" className="list">
-                                    List
-                                </a>
-                                <a href="#" className="grid active">
-                                    Grid
-                                </a>
-                                </div>
-                                <div className="sort-by">
-                                Sort by : 
-                                <select name>
-                                    <option value="Default" selected>
-                                    Default
-                                    </option>
-                                    <option value="Name">
-                                    Name
-                                    </option>
-                                    <option value="<strong> #</strong> ">
-                                    Price
-                                    </option>
-                                </select>
-                                </div>
-                                <div className="limiter">
-                                Show : 
-                                <select name>
-                                    <option value={3} selected>
-                                    3
-                                    </option>
-                                    <option value={6}>
-                                    6
-                                    </option>
-                                    <option value={9}>
-                                    9
-                                    </option>
-                                </select>
+                            <div className="toolbar">
+                                
+                                <div className="pager">
+                                    <a href="#" className="prev-page">
+                                        <i className="fa fa-angle-left"></i>
+                                    </a>
+                                    {/* <a href="#" className="active">
+                                    1
+                                    </a> */}
+                                    {renderPageNumbers}
+                                    
+                                    <Link to="#" className="next-page">
+                                        <i className="fa fa-angle-right"></i>
+                                    </Link>
                                 </div>
                             </div>
-                            <div className="pager">
-                                <a href="#" className="prev-page">
-                                <i className="fa fa-angle-left">
-                                </i>
-                                </a>
-                                <a href="#" className="active">
-                                1
-                                </a>
-                                <a href="#">
-                                2
-                                </a>
-                                <a href="#">
-                                3
-                                </a>
-                                <a href="#" className="next-page">
-                                <i className="fa fa-angle-right">
-                                </i>
-                                </a>
-                            </div>
-                            </div> */}
+
+
+                            {/* <ul id="page-numbers">
+                                {renderPageNumbers}
+                            </ul> */}
+
+
+
                             <div className="clearfix">
                             </div>
                         </div>
