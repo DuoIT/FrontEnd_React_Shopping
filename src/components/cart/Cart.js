@@ -12,7 +12,7 @@ class Cart extends Component {
             userId : '',
             cart : []
         }
-        this.getCart();
+        if(this.getCookie('access_token') !== '') this.getCart();
     }
 
     getCookie = (cname) => {
@@ -38,8 +38,9 @@ class Cart extends Component {
         });
     } 
 
-    getCart= async () => {
-        await Axios.post('http://localhost:3000/cart', {userId: this.decode()._id})
+    getCart= () => {
+        const user = this.decode();
+        Axios.post('http://localhost:3000/cart', {userId: user._id})
         .then(doc => {
             return this.setState({
                 cart : doc.data.cart
@@ -52,17 +53,7 @@ class Cart extends Component {
         })
     }
 
-    handleButtonDeleteClick = (e)=>{
-        e.forceUpdate();
-        
-    }
-
-    updateCart = () => {
-
-    }
-
     render() {
-        console.log(this.state.redirect);
         if(this.getCookie('access_token') === '') {
             return <Redirect to="/user/signin" />
         }
@@ -78,7 +69,6 @@ class Cart extends Component {
                         productId = {doc.productId}
                         userId = {this.decode()._id}
                         cartId = {doc._id}
-                        handleButtonDeleteClick = {() => this.handleButtonDeleteClick()}
                     />
         });
         console.log(total);

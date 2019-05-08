@@ -2,16 +2,19 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 import Axios from 'axios';
 import Cate from './Cate';
+import Redirect from 'react-router-dom/Redirect'
+import SearchProduct from '../search/SearchProduct';
 
 class Header extends Component {
     constructor(props) {
         super(props);        
         this.state  = {
-            categories : []
+            categories : [],
+            search: ''
         }
         Axios.get('http://localhost:3000/')
         .then(docs => {
-            this.setState({
+            return this.setState({
                 categories: docs.data.cates
             });   
         })
@@ -38,6 +41,10 @@ class Header extends Component {
             }
         }
         return '';
+    }
+    
+    isChange = (e) => {
+        this.setState({search : e.target.value});
     }
 
     render() {
@@ -76,15 +83,16 @@ class Header extends Component {
                         <div className="clearfix" />
                         <div className="header_bottom">
                         <ul className="option">
-                            <li id="search" className="search">
-                                <form>
-                                    <input type="text" />
-                                    <input className="search-submit" type="submit"  />
-                                    {/* <input className="search-input" placeholder="Enter your search term..." type="text" defaultValue name="search" /> */}
-                                </form>
+                        {/* id="search" className="search" */}
+                            <li id="search" class="search">
+                                {/* <form> */}
+                                    <input style={{width: '180px'}} onChange={(e) => this.isChange(e)} type="text" placeholder="Search.." name="search" />
+                                    {/* <input onClick={() => this.search()  }  style={{marginRight: '10px'}} type="submit" value="Timkiem" /> */}
+                                    <a style={{marginLeft: '10px', borderRadius: '999px', padding: '10px', background: 'white'}} href={"http://localhost:3001/search/q="+this.state.search}><i style={{fontSize: '15px'}} className="fa fa-search"></i> Tim kiem</a>
+                                {/* </form> */}
                             </li>
                             <li className="option-cart">
-                                <Link to="/cart" className="cart-icon">cart <span className="cart_no">02</span></Link>
+                                <Link to="/cart" className="cart-icon">cart <span className="cart_no"></span></Link>
                             </li>
                         </ul>
                         <div className="navbar-header"><button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span className="sr-only">Toggle navigation</span><span className="icon-bar" /><span className="icon-bar" /><span className="icon-bar" /></button></div>

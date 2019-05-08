@@ -19,11 +19,20 @@ class ProductCart extends Component {
         .catch(err => {
             console.log(err);
         })
-        this.props.handleButtonDeleteClick();
     }
 
     isChange = (event) => {
-        this.setState({qty : event.target.value});
+        const name = event.target.name;
+        const value = event.target.value;
+
+        this.setState({[name] : value});
+    }
+
+    postQty = () => {
+        console.log(this.state.qty);
+    }
+
+    render() {
         Axios.post('http://localhost:3000/cart/'+this.props.productId, {userId: this.props.userId , qty : this.state.qty})
         .then(res => {
             console.log(res.data);
@@ -31,9 +40,7 @@ class ProductCart extends Component {
         .catch(err => {
             console.log(err);
         })
-    }
-
-    render() {
+        console.log(this.state.qty)
         return (
             <div>
                 <tr>
@@ -53,12 +60,12 @@ class ProductCart extends Component {
                         </h5>
                     </td>
                     <td style={{width : '10%'}}>
-                        <input onChange={(event) => this.isChange(event)} style={{width : '90%', minWidth: '60px'}} type="number" defaultValue={this.props.qty} />
+                        <input min="1" onChange={(event) => this.isChange(event)} style={{width : '90%', minWidth: '60px'}} name="qty" type="number" defaultValue={this.props.qty} />
                     </td>
                     <td style={{width : '10%'}}>
                         <h5>
                             <strong className="red">
-                                {this.props.price* this.props.qty}
+                                {this.props.price* this.state.qty}
                             </strong>
                         </h5>
                     </td>

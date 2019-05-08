@@ -7,6 +7,7 @@ import ProductCate from '../components/categories/ProductCate';
 import SignUp from '../components/user/SignUp';
 import SignIn from '../components/user/SignIn';
 import Cart from '../components/cart/Cart';
+import SearchProduct from '../components/search/SearchProduct';
 
 class DieuhuongURL extends Component {
     render() {
@@ -19,6 +20,7 @@ class DieuhuongURL extends Component {
                 <Route path="/user/signup" component={SignUp} />
                 <Route path="/user/signin" component={SignIn} />
                 <Route path="/cart" component={Cart} checkDangNhap={() => this.checkDangNhap()}  decode={() => this.decode()} />
+                <Route path="/search/q=:q" component={SearchProduct} />
                 {/* <Route path="/add-to-cart/:id" component={AddToCard} /> */}
                 {/* <Route path='/cate/:slug/:id' component={ProductCate} /> */}
             </div>
