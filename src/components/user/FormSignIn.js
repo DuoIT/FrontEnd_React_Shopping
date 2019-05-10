@@ -31,10 +31,7 @@ class FormSignIn extends Component {
                 message: res.data.access_token
             })
             document.cookie = 'access_token =' + res.data.access_token + "; max-age=10800; path=/";
-            // localStorage.setItem('access_token',res.data.access_token)
-            this.setState({
-                isDirect : true
-            });
+            return window.location.reload();
         })
         .catch(err => {
             this.setState({
@@ -53,9 +50,24 @@ class FormSignIn extends Component {
         this.postAuth(); 
 
     }
+    getCookie = (cname) => {
+        var name = cname + '=';
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return '';
+    }
 
     render() {
-        if(this.state.isDirect === true) {
+        if(this.getCookie('access_token') !== '' ) {
             return <Redirect to="/" />
         }
         return (

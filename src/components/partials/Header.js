@@ -7,7 +7,7 @@ import SearchProduct from '../search/SearchProduct';
 
 class Header extends Component {
     constructor(props) {
-        super(props);        
+        super(props);       
         this.state  = {
             categories : [],
             search: ''
@@ -20,7 +20,7 @@ class Header extends Component {
         })
         .catch(function (error) {
             console.log(error);
-        });     
+        });    
     };
     
     logout = (e) => {

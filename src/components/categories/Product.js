@@ -18,10 +18,10 @@ class Product extends Component {
         var ca = decodedCookie.split(';');
         for(var i = 0; i <ca.length; i++) {
             var c = ca[i];
-            while (c.charAt(0) == ' ') {
+            while (c.charAt(0) === ' ') {
                 c = c.substring(1);
             }
-            if (c.indexOf(name) == 0) {
+            if (c.indexOf(name) === 0) {
                 return c.substring(name.length, c.length);
             }
         }
@@ -59,12 +59,13 @@ class Product extends Component {
         if(this.state.redirect === true) {
             return <Redirect to='/user/signin' />
         }
+        // style={{maxWidth: '262.5px'}}
         return (
-            <div className="col-md-4 col-sm-6" style={{maxWidth: '262.5px'}} >
+            <div className="col-md-3 col-sm-6"  >
                 <div className="products">
-                    <div className="thumbnail">
+                    <div className="thumbnail" style={{margin: '5px 0'}}>
                         <Link to={"/detail/"+ this.props.id}>
-                        <img src={this.props.img} alt="Product Name" />
+                            <img src={this.props.img} alt="Product Name" />
                         </Link>
                     </div>
                     <div className="productname">

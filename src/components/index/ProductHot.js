@@ -62,7 +62,7 @@ class ProductHot extends Component {
         return (
             <div className="col-md-3 col-sm-6">
                 <div className="products">
-                    <div className="offer">- %20</div>
+                    {/* <div className="offer">- %20</div> */}
                     <div className="thumbnail"><Link to={"/detail/" + this.props.id}><img src={this.props.img} alt="Product Name" /></Link></div>
                     <div className="productname">{this.props.name}</div>
                     <h4 className="price">{this.props.price}</h4>

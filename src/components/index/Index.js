@@ -4,22 +4,24 @@ import Axios from 'axios';
 import ProductHot from './ProductHot';
 
 class Index extends Component {
-  constructor(props) {
-    super(props);        
-    this.state  = {
-        products : [],
-    }
-    Axios.get('http://localhost:3000/')
-    .then(docs => {
-      this.setState({
-          products: docs.data.products
-      });  
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
-  };
+    constructor(props) {
+      super(props);        
+      this.state  = {
+          products : [],
+      }
+      Axios.get('http://localhost:3000/')
+      .then(docs => {
+        this.setState({
+            products: docs.data.products
+        });  
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    };
+    
     render() {
+      const { products } = this.state;
       var showProduct = [];
       var chunk = 4;
       for(var i = 0; i< this.state.products.length; i+= chunk) {
@@ -28,10 +30,11 @@ class Index extends Component {
       const show = (
         <div className="hot-products">
           <h3 className="title"><strong>Hot</strong> Products</h3>
-          <div className="control"><a id="prev_hot" className="prev" href="#">&lt;</a><a id="next_hot" className="next" href="#">&gt;</a></div>
+          {/* <div className="control"><a id="prev_hot" className="prev" href="#">&lt;</a><a id="next_hot" className="next" href="#">&gt;</a></div> */}
           <ul id="hot">
             {
               showProduct.map(listProduct => {
+                // this.state.products.map(product => {
                 return (
                   <li>
                     {
@@ -112,15 +115,27 @@ class Index extends Component {
           <div className="clearfix" />
           <div className="container_fullwidth">
             <div className="container">
-              {/* <div className="hot-products">
+              <div className="hot-products">
                 <h3 className="title"><strong>Hot</strong> Products</h3>
                 {/* <div className="control"><a id="prev_hot" className="prev" href="#" style={{display: 'block'}}>&lt;</a><a id="next_hot" className="next" href="#" style={{display: 'block'}}>&gt;</a></div> */}
 
-                {/* <div className="control"><a id="prev_hot" className="prev" href="#">&lt;</a><a id="next_hot" className="next" href="#">&gt;</a></div>
-                <ul id="hot"> */}
-                  {show}
-                {/* </ul>
-              </div> */}
+                {/* <div className="control"><a id="prev_hot" className="prev" href="#">&lt;</a><a id="next_hot" className="next" href="#">&gt;</a></div> */}
+                {/* id="hot" */}
+                <ul >
+                  {/* {show} */}
+                  {
+                    products.map(product => {
+                      return <li>
+                        <ProductHot 
+                          img={product.img} 
+                          name={product.name} 
+                          price={product.price} 
+                          id={product._id} />                    
+                      </li>
+                    })
+                  }
+                </ul>
+              </div>
               <div className="clearfix" />
               <div className="featured-products">
                 <h3 className="title"><strong>Featured </strong> Products</h3>
