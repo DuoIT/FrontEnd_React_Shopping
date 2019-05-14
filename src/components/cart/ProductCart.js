@@ -14,11 +14,12 @@ class ProductCart extends Component {
         // console.log(this.props.id);
         Axios.delete('http://localhost:3000/cart/remove/'+this.props.cartId)
         .then(res => {
-            console.log(res);
+            console.log(res.data);
         })
         .catch(err => {
             console.log(err);
         })
+        this.props.getCart();
     }
 
     isChange = (event) => {
@@ -50,7 +51,7 @@ class ProductCart extends Component {
                     <td style={{width : '45%'}}>
                         <div className="shop-details">
                             <div className="productname">
-                            {this.props.name}
+                            <Link to={"/detail/" + this.props.productId} > {this.props.name}</Link>
                             </div>
                         </div>
                     </td>

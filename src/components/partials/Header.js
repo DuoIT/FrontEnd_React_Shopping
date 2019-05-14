@@ -60,7 +60,7 @@ class Header extends Component {
             user = (
                 <ul className="usermenu">
                     <li><a href="/user/profile" className="log">Profile</a></li>
-                    <li><a onClick={e => this.logout(e)} href="/"><i className="fa fa-user-o" /> Logout</a></li>
+                    <li><a onClick={e => this.logout(e)} href="/"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
                 </ul>
             )
         }

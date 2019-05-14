@@ -8,7 +8,7 @@ class Cate extends Component {
     render() {
         return (
             // <div>
-                <li><a href={"/cates/"+ this.props.id}>{this.props.name}</a></li>
+                <li><Link to={"/cates/"+ this.props.id}>{this.props.name}</Link></li>
             // </div>
         );
     }

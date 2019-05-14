@@ -70,12 +70,25 @@ class FormSignIn extends Component {
         if(this.getCookie('access_token') !== '' ) {
             return <Redirect to="/" />
         }
+        var message = undefined;
+        if(this.state.status === 404) {
+            message = (
+                <div class="col-sm-12 col-md-12">
+                    <div class="alert-message alert-message-danger"  style={{fontSize: '15px'}}>
+                        <h4>Co loi: </h4>
+                        {
+                            this.state.message.map(mess => {
+                                return <p>  {mess}  </p>;
+                            })
+                        }
+                    </div>
+                </div>        
+            )
+        }
         return (
             <div>
                 <form action="/user/signin" method="POST" name="login">
-                    <div className="alert alert-danger" role="alert">
-                        <p><strong>Warning! </strong> Nhap day du cac thong tin </p> 
-                    </div>
+                    {message}
                     <div className="form-group">
                         <label htmlFor>Username</label>
                         <input onChange={(event) => this.isChange(event)} type="text" name="username" className="form-control" id="username" placeholder="Enter Username" />
@@ -85,7 +98,7 @@ class FormSignIn extends Component {
                         <input onChange={(event) => this.isChange(event)} type="password" name="password" id="password" className="form-control" placeholder="Enter Password" />
                     </div>
                     <div className="col-md-12 text-center ">
-                        <button onClick={(event) => this.isSubmitForm(event)} type="submit" className=" btn btn-block mybtn btn-primary tx-tfm">Sign In</button>
+                        <button style={{backgroundColor: 'blue'}} onClick={(event) => this.isSubmitForm(event)} type="submit" className=" btn btn-block mybtn btn-primary tx-tfm">Sign In</button>
                     </div>
                     <div className="col-md-12 ">
                         <div className="login-or">

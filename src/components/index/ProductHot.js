@@ -64,7 +64,7 @@ class ProductHot extends Component {
                 <div className="products">
                     {/* <div className="offer">- %20</div> */}
                     <div className="thumbnail"><Link to={"/detail/" + this.props.id}><img src={this.props.img} alt="Product Name" /></Link></div>
-                    <div className="productname">{this.props.name}</div>
+                    <div className="productname"><Link to={"/detail/" + this.props.id}>{this.props.name}</Link></div>
                     <h4 className="price">{this.props.price}</h4>
                     <div className="button_group">
                         <button onClick={() => this.addToCart(this.props.id)} className="button add-cart" type="button">Add To Cart</button>

@@ -38,9 +38,10 @@ class Cart extends Component {
         });
     } 
 
-    getCart= () => {
+    getCart= async () => {
+        console.log('ok');
         const user = this.decode();
-        Axios.post('http://localhost:3000/cart', {userId: user._id})
+        await Axios.post('http://localhost:3000/cart', {userId: user._id})
         .then(doc => {
             return this.setState({
                 cart : doc.data.cart
@@ -54,24 +55,13 @@ class Cart extends Component {
     }
 
     render() {
+        console.log('render');
         if(this.getCookie('access_token') === '') {
             return <Redirect to="/user/signin" />
         }
         console.log(this.state.cart);
-        var total = 0;
-        const product = this.state.cart.map(doc => {
-            total += doc.price*doc.qty;
-            return <ProductCart 
-                        img={doc.img} 
-                        name={doc.name} 
-                        price={doc.price}
-                        qty={doc.qty}
-                        productId = {doc.productId}
-                        userId = {this.decode()._id}
-                        cartId = {doc._id}
-                    />
-        });
-        console.log(total);
+        
+
         return (
             <div>
                 <div className="clearfix">
@@ -109,7 +99,21 @@ class Cart extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                                {product}
+                                
+                                {
+                                    this.state.cart.map(doc => {
+                                        return <ProductCart 
+                                            img={doc.img} 
+                                            name={doc.name} 
+                                            price={doc.price}
+                                            qty={doc.qty}
+                                            productId = {doc.productId}
+                                            userId = {this.decode()._id}
+                                            cartId = {doc._id}
+                                            getCart = {() => this.getCart()}
+                                        />
+                                    })
+                                }
                             </tbody>
                             <tfoot>
                             <tr>
@@ -152,7 +156,7 @@ class Cart extends Component {
                                     Sub Total
                                 </h5>
                                 <span>
-                                    {total}
+                                    {/* {total} */}123
                                 </span>
                                 </div>
                                 <div className="grandtotal">
@@ -160,7 +164,7 @@ class Cart extends Component {
                                     GRAND TOTAL 
                                 </h5>
                                 <span>
-                                    {total}
+                                    {/* {total} */}123
                                 </span>
                                 </div>
                                 <button>

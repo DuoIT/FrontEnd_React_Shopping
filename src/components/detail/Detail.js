@@ -83,7 +83,7 @@ class Detail extends Component {
                                     <div className="preview-small">
                                         <img id="zoom_03" src={this.state.product.img} alt="img product" />
                                     </div>
-                                    <div className="thum-image">
+                                    {/* <div className="thum-image">
                                         <ul id="gallery_01" className="prev-thum">
                                         <li>
                                             <a href="#" data-image="images/products/medium/products-01.jpg" data-zoom-image="images/products/Large/products-01.jpg">
@@ -120,10 +120,11 @@ class Detail extends Component {
                                         </i>
                                         </a>
                                     </div>
+                                 */}
                                 </div>
                             <div className="products-description">
                                 <h5 className="name">
-                                    {this.state.product.name}
+                                {this.state.product.name}
                                 </h5>                            
                                 <p>
                                     Availability: 

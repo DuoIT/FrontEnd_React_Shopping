@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 
 class Product extends Component {
     render() {
@@ -12,8 +13,8 @@ class Product extends Component {
                         <img src={this.props.img} alt="Product Name" />
                     </div>
                     <div className="product-list-description">
-                        <div className="productname">
-                        {this.props.name}
+                        <div className="productname">                       
+                        <Link to={"/detail/" + this.props.id} > {this.props.name}</Link>
                         </div>
                         <p>
                             {this.props.des}
@@ -21,15 +22,15 @@ class Product extends Component {
                         <div className="list_bottom">
                             <div className="price">
                                 <span className="new_price">
-                                    450.00
+                                    {this.props.price}
                                     <sup>
-                                    $
+                                    ₫
                                     </sup>
                                 </span>
                                 <span className="old_price">
-                                    450.00
+                                    {this.props.price*1.2}
                                     <sup>
-                                    $
+                                    ₫
                                     </sup>
                                 </span>
                             </div>

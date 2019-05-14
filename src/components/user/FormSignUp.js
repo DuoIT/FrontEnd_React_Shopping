@@ -24,6 +24,9 @@ class FormSignUp extends Component {
         this.setState({[name] : value});
     }
     postAuth = () => {
+        this.setState({
+            status: 0
+        })
         Axios.post('http://localhost:3000/user/signup', {
             "username": this.state.username,
             "password": this.state.password,
@@ -57,27 +60,40 @@ class FormSignUp extends Component {
          
     }
 
-    render() {
-        if(this.state.isDirect === true)
-            return <Redirect to="/user/signin" />   
+    render() {        
+        // if(this.state.isDirect === true)
+        //     return <Redirect to="/user/signin" />   
         var message = undefined;
         if(this.state.status === 404) {
             message = (
-                <div className="alert alert-danger">
-                {
-                    this.state.message.map(mess => {
-                        return <p> {mess}  </p>;
-                    })
-                }                    
-                </div>
+                <div class="col-sm-12 col-md-12">
+                    <div class="alert-message alert-message-danger"  style={{fontSize: '15px'}}>
+                        <h4>Co loi: </h4>
+                        {
+                            this.state.message.map(mess => {
+                                return <p>  {mess}  </p>;
+                            })
+                        }
+                    </div>
+                </div>        
             )
-        }      
+        }  else if(this.state.status === 200) {
+            message = (
+                <div class="col-sm-12 col-md-12">
+                    <div class="alert-message alert-message-success"  style={{fontSize: '15px'}}>
+                        {this.state.message}
+                    </div>
+                </div> 
+            )
+            
+        }
 
-        return ( 
-
-            <div>
-                <form action="/user/signup" method="POST" name="signup">                     
-                    {message}  
+        return (
+            <div>      
+                
+                {message}          
+                <form style={{fontSize: '15px'}} action="/user/signup" method="POST" name="signup">
+                
                     <div className="form-group">
                         <label htmlFor>Username</label>
                         <input onChange={(event) => this.isChange(event)} type="text" name="username" className="form-control" id="username" placeholder="Enter Username" />
@@ -103,15 +119,14 @@ class FormSignUp extends Component {
                         <input onChange={(event) => this.isChange(event)} type="text" name="phone" className="form-control" id="phone" placeholder="Enter Phone Number" />
                     </div>
                     <div className="col-md-12 text-center mb-3">
-                        <button onClick={(event) => this.isSubmitForm(event)} type="submit" className=" btn btn-block mybtn btn-primary tx-tfm">Get Started For Free</button>
+                        <button style={{backgroundColor: 'green'}} onClick={(event) => this.isSubmitForm(event)} type="submit" className=" btn btn-block mybtn btn-primary tx-tfm">Get Started For Free</button>
                     </div>
-                    <div className="col-md-12 ">
+                    <div className="col-md-12 " style={{marginTop: '10px'}}>
                         <div className="form-group">
-                        <p className="text-center"><a href="/user/signin" id="signin">Already have an account?</a></p>
+                            <p className="text-center"><a href="/user/signin" id="signin">Already have an account?</a></p>
                         </div>
                     </div>
-                
-                </form>
+                </form>                
             </div>
         );
     }
