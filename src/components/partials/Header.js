@@ -25,6 +25,7 @@ class Header extends Component {
     
     logout = (e) => {
         document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+        return window.location.reload();
         // localStorage.removeItem('access_token');
     }
     getCookie = (cname) => {
@@ -52,14 +53,14 @@ class Header extends Component {
         if(this.getCookie('access_token') === '') {
             user = (
                 <ul className="usermenu">
-                    <li><a href="/user/signin" className="log">Login</a></li>
-                    <li><a href="/user/signup" className="reg">Register</a></li>
+                    <li><Link to="/user/signin" className="log">Login</Link></li>
+                    <li><Link to="/user/signup" className="reg">Register</Link></li>
                 </ul>
             )
         } else {
             user = (
                 <ul className="usermenu">
-                    <li><a href="/user/profile" className="log">Profile</a></li>
+                    <li><Link to="/user/profile" className="log">Profile</Link></li>
                     <li><a onClick={e => this.logout(e)} href="/"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
                 </ul>
             )

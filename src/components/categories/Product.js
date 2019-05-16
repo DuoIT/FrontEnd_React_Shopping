@@ -61,21 +61,24 @@ class Product extends Component {
         }
         // style={{maxWidth: '262.5px'}}
         return (
-            <div className="col-md-3 col-sm-6"  >
+            <div className="col-md-3 col-sm-6">
                 <div className="products">
-                    <div className="thumbnail" style={{margin: '5px 0'}}>
+                    <div className="thumbnail"  style={{height: '260px'}}>
                         <Link to={"/detail/"+ this.props.id}>
-                            <img src={this.props.img} alt="Product Name" />
+                            <img style={{maxWidth: '95%', margin: '0 auto'}}  src={this.props.img} alt="Product Name" />
                         </Link>
                     </div>
-                    <div className="productname">
+                    <div className="productname" style={{fontWeight: 'bold', height: '55px'}}>
                         {this.props.name}
                     </div>
                     <h4 className="price">
                         {this.props.price}
                     </h4>
                     <div className="button_group">
-                        <button onClick={() => this.addToCart(this.props.id)} className="button add-cart" type="button" >
+                        <button onClick={() => {
+                            this.addToCart(this.props.id);
+                            this.props.showMessage();
+                        } } className="button add-cart" type="button" >
                         Add To Cart
                         </button>
                         {/* <button className="button compare" type="button">

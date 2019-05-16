@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 import Axios from 'axios';
 import ProductHot from './ProductHot';
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 class Index extends Component {
     constructor(props) {
@@ -20,44 +22,20 @@ class Index extends Component {
       });
     };
     
+    showMessage = () => {      
+      toast.success("Add to cart success!", {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    }
+  
     render() {
       const { products } = this.state;
-      var showProduct = [];
-      var chunk = 4;
-      for(var i = 0; i< this.state.products.length; i+= chunk) {
-        showProduct.push(this.state.products.slice(i, i+chunk));
-      }
-      const show = (
-        <div className="hot-products">
-          <h3 className="title"><strong>Hot</strong> Products</h3>
-          {/* <div className="control"><a id="prev_hot" className="prev" href="#">&lt;</a><a id="next_hot" className="next" href="#">&gt;</a></div> */}
-          <ul id="hot">
-            {
-              showProduct.map(listProduct => {
-                // this.state.products.map(product => {
-                return (
-                  <li>
-                    {
-                      listProduct.map(product => {
-                        return <ProductHot 
-                          img={product.img} 
-                          name={product.name} 
-                          price={product.price} 
-                          id={product._id} />
-                      })
-                    }
-                  </li>
-                )
-              })
-            }
-          </ul>
-        </div>
-      )
       return (
-        <div>
+        <div> 
+          <ToastContainer autoClose={1500} /> 
           <div className="clearfix" />
           <div className="hom-slider" id="home">
-            <div className="container" >
+            <div className="container" >              
               <div id="sequence" >
                 <div className="sequence-prev"><i className="fa fa-angle-left" /></div>
                 <div className="sequence-next"><i className="fa fa-angle-right" /></div>
@@ -108,17 +86,23 @@ class Index extends Component {
           <div className="container_fullwidth">
             <div className="container">
               <div className="hot-products">
-                <h3 className="title"><strong>Hot</strong> Products</h3>
+                {/* <ToastContainer
+                    ref={ref => container = ref}
+                    className="toast-top-right"
+                /> */}
+                <h3 className="title"><strong>Hot</strong> Products</h3>  
+                             
                 {/* <div className="control"><a id="prev_hot" className="prev" href="#" style={{display: 'block'}}>&lt;</a><a id="next_hot" className="next" href="#" style={{display: 'block'}}>&gt;</a></div> */}
 
                 {/* <div className="control"><a id="prev_hot" className="prev" href="#">&lt;</a><a id="next_hot" className="next" href="#">&gt;</a></div> */}
                 {/* id="hot" */}
-                <ul >
+                <ul>
                   {/* {show} */}
                   {
                     products.map(product => {
                       return <li>
-                        <ProductHot 
+                        <ProductHot
+                          showMessage = {() => this.showMessage()}
                           img={product.img} 
                           name={product.name} 
                           price={product.price} 

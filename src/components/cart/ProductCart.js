@@ -8,25 +8,33 @@ class ProductCart extends Component {
         this.state = {
             qty : this.props.qty
         }
+        this.isChange = this.isChange.bind(this);
     }
     
-    removeProduct = (e) => {
-        // console.log(this.props.id);
-        Axios.delete('http://localhost:3000/cart/remove/'+this.props.cartId)
-        .then(res => {
-            console.log(res.data);
+    removeProduct = async () => {  
+        console.log('remove:  '+this.props.cartId)      ;
+        await Axios.post('http://localhost:3000/cart/remove/product/',{id : this.props.cartId})
+        .then( res => {
+            console.log('Da remove ' + res);            
         })
         .catch(err => {
             console.log(err);
         })
-        this.props.getCart();
+        return this.props.getCart();
     }
 
-    isChange = (event) => {
+    isChange = async (event) => {
         const name = event.target.name;
         const value = event.target.value;
-
-        this.setState({[name] : value});
+        await this.setState({[name] : value});
+        // this.props.productId, {userId: this.props.userId , qty : parseInt(this.state.qty)}
+        return Axios.post('http://localhost:3000/cart/product/'+this.props.cartId, {qty: this.state.qty})
+        .then(res => {
+            console.log(res.status);
+        })
+        .catch(err => {
+            console.log(err.response.data);
+        })
     }
 
     postQty = () => {
@@ -34,14 +42,7 @@ class ProductCart extends Component {
     }
 
     render() {
-        Axios.post('http://localhost:3000/cart/'+this.props.productId, {userId: this.props.userId , qty : this.state.qty})
-        .then(res => {
-            console.log(res.data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
-        console.log(this.state.qty)
+        
         return (
             <div>
                 <tr>
@@ -71,7 +72,7 @@ class ProductCart extends Component {
                         </h5>
                     </td>
                     <td style={{width : '10%'}}>
-                        <Link to="/cart" onClick={(e) => this.removeProduct(e)} >
+                        <Link to="/cart" onClick={() => this.removeProduct()} >
                             <img src="images/remove.png" alt="img delete" />
                         </Link>
                     </td>

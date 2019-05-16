@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import Redirect from 'react-router-dom/Redirect'
+import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 class FormSignIn extends Component {
@@ -38,15 +41,17 @@ class FormSignIn extends Component {
                 status : err.response.status,
                 message : err.response.data.message
             });
-            console.log(err.response.status);
-            console.log(err.response.data);
+            this.state.message.map(mess => {
+                toast.error(mess, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            })
         })
     }
 
     isSubmitForm = (event) => {
         event.preventDefault();
-        this.setState({message: []});
-        
+        this.setState({message: []});        
         this.postAuth(); 
 
     }
@@ -70,25 +75,10 @@ class FormSignIn extends Component {
         if(this.getCookie('access_token') !== '' ) {
             return <Redirect to="/" />
         }
-        var message = undefined;
-        if(this.state.status === 404) {
-            message = (
-                <div class="col-sm-12 col-md-12">
-                    <div class="alert-message alert-message-danger"  style={{fontSize: '15px'}}>
-                        <h4>Co loi: </h4>
-                        {
-                            this.state.message.map(mess => {
-                                return <p>  {mess}  </p>;
-                            })
-                        }
-                    </div>
-                </div>        
-            )
-        }
         return (
-            <div>
+            <div>        
+                <ToastContainer/> 
                 <form action="/user/signin" method="POST" name="login">
-                    {message}
                     <div className="form-group">
                         <label htmlFor>Username</label>
                         <input onChange={(event) => this.isChange(event)} type="text" name="username" className="form-control" id="username" placeholder="Enter Username" />
@@ -114,7 +104,7 @@ class FormSignIn extends Component {
                         </p>
                     </div>
                     <div className="form-group">
-                        <p className="text-center">Don't have account? <a href="/user/signup" id="signup">Sign up here</a></p>
+                        <p className="text-center">Don't have account? <Link to="/user/signup" id="signup">Sign up here</Link></p>
                     </div>
                 </form>
             </div>

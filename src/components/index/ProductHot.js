@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 import Axios from 'axios';
 import jwt from 'jsonwebtoken';
-import Redirect from 'react-router-dom/Redirect'
+import Redirect from 'react-router-dom/Redirect';
 
 class ProductHot extends Component {
     constructor(props) {
@@ -36,16 +36,14 @@ class ProductHot extends Component {
     }
     
     addToCart = (id) => {
-        console.log('click');
         if(this.getCookie('access_token') === '') {
-        console.log('Chua dang nhap');
+            console.log('Chua dang nhap');
         return this.setState({redirect : true})
         }  else {
         const user = this.decode();
         console.log(user);
         console.log(this.props.id);
-        console.log(user._id);
-        
+        console.log(user._id);        
         return Axios.post('http://localhost:3000/add-to-cart/'+this.props.id, { "userId" : user._id, "qty" : 1})
         .then(res => {
             console.log(res.status);
@@ -55,19 +53,24 @@ class ProductHot extends Component {
         })
         }
     }
+
     render() {
         if(this.state.redirect === true) {
             return <Redirect to='/user/signin' />
-        }  
+        }     
         return (
-            <div className="col-md-3 col-sm-6">
+            <div className="col-md-3 col-sm-6">                
                 <div className="products">
-                    {/* <div className="offer">- %20</div> */}
-                    <div className="thumbnail"><Link to={"/detail/" + this.props.id}><img src={this.props.img} alt="Product Name" /></Link></div>
-                    <div className="productname"><Link to={"/detail/" + this.props.id}>{this.props.name}</Link></div>
+                    <div className="thumbnail" style={{height: '240px'}}>
+                        <Link to={"/detail/" + this.props.id}><img style={{maxWidth: '95%', margin: '0 auto'}} src={this.props.img} alt="Product Name" /></Link>
+                    </div>
+                    <div className="productname"  style={{fontWeight: 'bold', height: '55px'}}><Link to={"/detail/" + this.props.id}>{this.props.name}</Link></div>
                     <h4 className="price">{this.props.price}</h4>
                     <div className="button_group">
-                        <button onClick={() => this.addToCart(this.props.id)} className="button add-cart" type="button">Add To Cart</button>
+                        <button onClick={() => {
+                            this.addToCart(this.props.id);
+                            this.props.showMessage();                            
+                        }} className="button add-cart" type="button">Add To Cart</button>
                     </div>
                 </div>
             </div> 

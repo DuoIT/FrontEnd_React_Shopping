@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import Redirect from 'react-router-dom/Redirect'
+import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 import Axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 class FormSignUp extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isDirect : false,
             username: '',
             password: '',
             re_pass: '',
@@ -23,11 +24,8 @@ class FormSignUp extends Component {
         const value = event.target.value;
         this.setState({[name] : value});
     }
-    postAuth = () => {
-        this.setState({
-            status: 0
-        })
-        Axios.post('http://localhost:3000/user/signup', {
+    postAuth = async () => {
+        await Axios.post('http://localhost:3000/user/signup', {
             "username": this.state.username,
             "password": this.state.password,
             "re_pass": this.state.re_pass,
@@ -39,61 +37,36 @@ class FormSignUp extends Component {
             this.setState({
                 status: res.status,
                 message: res.data.message
-            })
-            this.setState({
-                isDirect : true
-            })
+            });
+            toast.success('Dang ky thanh cong, hay dang nhap', {
+                position: toast.POSITION.TOP_RIGHT
+            });
             
         })
         .catch(err => {
+            console.log(err.response.data);
             this.setState({
                 status : err.response.status,
                 message : err.response.data.message
             });
+            this.state.message.map(mess => {
+                toast.error(mess, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            })
         })
     }
     isSubmitForm = (event) => {
         event.preventDefault();
-        this.setState({message: []});
-        
+        this.setState({message: []});        
         this.postAuth();
-         
     }
 
-    render() {        
-        // if(this.state.isDirect === true)
-        //     return <Redirect to="/user/signin" />   
-        var message = undefined;
-        if(this.state.status === 404) {
-            message = (
-                <div class="col-sm-12 col-md-12">
-                    <div class="alert-message alert-message-danger"  style={{fontSize: '15px'}}>
-                        <h4>Co loi: </h4>
-                        {
-                            this.state.message.map(mess => {
-                                return <p>  {mess}  </p>;
-                            })
-                        }
-                    </div>
-                </div>        
-            )
-        }  else if(this.state.status === 200) {
-            message = (
-                <div class="col-sm-12 col-md-12">
-                    <div class="alert-message alert-message-success"  style={{fontSize: '15px'}}>
-                        {this.state.message}
-                    </div>
-                </div> 
-            )
-            
-        }
-
+    render() {               
         return (
-            <div>      
-                
-                {message}          
-                <form style={{fontSize: '15px'}} action="/user/signup" method="POST" name="signup">
-                
+            <div>                      
+                <ToastContainer/>          
+                <form style={{fontSize: '15px'}} action="/user/signup" method="POST" name="signup">                
                     <div className="form-group">
                         <label htmlFor>Username</label>
                         <input onChange={(event) => this.isChange(event)} type="text" name="username" className="form-control" id="username" placeholder="Enter Username" />
@@ -123,7 +96,7 @@ class FormSignUp extends Component {
                     </div>
                     <div className="col-md-12 " style={{marginTop: '10px'}}>
                         <div className="form-group">
-                            <p className="text-center"><a href="/user/signin" id="signin">Already have an account?</a></p>
+                            <p className="text-center"><Link to="/user/signin" id="signin">Already have an account?</Link></p>
                         </div>
                     </div>
                 </form>                

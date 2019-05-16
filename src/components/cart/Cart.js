@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import Redirect from 'react-router-dom/Redirect'
 import Axios from 'axios';
 import ProductCart from './ProductCart';
+import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 
 class Cart extends Component {
     constructor(props) {
@@ -10,7 +11,8 @@ class Cart extends Component {
         this.state = {
             redirect : false,
             userId : '',
-            cart : []
+            cart : [],
+            discountCode : ''
         }
         if(this.getCookie('access_token') !== '') this.getCart();
     }
@@ -38,29 +40,31 @@ class Cart extends Component {
         });
     } 
 
-    getCart= async () => {
-        console.log('ok');
+    getCart= () => {
+        console.log('get Cart');
         const user = this.decode();
-        await Axios.post('http://localhost:3000/cart', {userId: user._id})
+        return Axios.post('http://localhost:3000/cart', {userId: user._id})
         .then(doc => {
             return this.setState({
                 cart : doc.data.cart
             })
         })
         .catch(err => {
-            if(err) {
-                console.log(err);
-            }
+            console.log(err);
         })
     }
 
+    isChange = (event) => {
+        this.setState({discountCode : event.target.value});
+    }
     render() {
-        console.log('render');
         if(this.getCookie('access_token') === '') {
             return <Redirect to="/user/signin" />
         }
-        console.log(this.state.cart);
-        
+        var total = 0;
+        // this.state.cart.map(doc => {
+        //     total += doc.price;
+        // })
 
         return (
             <div>
@@ -98,10 +102,10 @@ class Cart extends Component {
                                 </th>
                             </tr>
                             </thead>
-                            <tbody>
-                                
+                            <tbody>                                
                                 {
                                     this.state.cart.map(doc => {
+                                        total += doc.price;
                                         return <ProductCart 
                                             img={doc.img} 
                                             name={doc.name} 
@@ -118,12 +122,14 @@ class Cart extends Component {
                             <tfoot>
                             <tr>
                                 <td colSpan={6}>
-                                <button className="pull-left">
-                                    Continue Shopping
+                                <Link to="/">
+                                    <button className="pull-left">
+                                        Continue Shopping
+                                    </button>
+                                </Link>
+                                <button className=" pull-right"  >
+                                    Delete All
                                 </button>
-                                {/* <button className=" pull-right">
-                                    Update Shopping Cart
-                                </button> */}
                                 </td>
                             </tr>
                             </tfoot>
@@ -134,13 +140,13 @@ class Cart extends Component {
                             <div className="col-md-4 col-sm-6">
                             <div className="shippingbox">
                                 <h5>
-                                Discount Codes
+                                    Discount Codes
                                 </h5>
                                 <form>
                                 <label>
                                     Enter your coupon code if you have one
                                 </label>
-                                <input type="text" name />
+                                <input onChange={(e) => this.isChange(e)} type="text" name="discountCode" />
                                 <div className="clearfix">
                                 </div>
                                 <button>
@@ -156,7 +162,7 @@ class Cart extends Component {
                                     Sub Total
                                 </h5>
                                 <span>
-                                    {/* {total} */}123
+                                    {total}
                                 </span>
                                 </div>
                                 <div className="grandtotal">
@@ -164,7 +170,7 @@ class Cart extends Component {
                                     GRAND TOTAL 
                                 </h5>
                                 <span>
-                                    {/* {total} */}123
+                                    {total}
                                 </span>
                                 </div>
                                 <button>
@@ -193,45 +199,6 @@ class Cart extends Component {
                         </a>
                         </div>
                         <ul id="braldLogo">
-                        <li>
-                            <ul className="brand_item">
-                            <li>
-                                <a href="#">
-                                <div className="brand-logo">
-                                    <img src="images/envato.png" alt />
-                                </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                <div className="brand-logo">
-                                    <img src="images/themeforest.png" alt />
-                                </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                <div className="brand-logo">
-                                    <img src="images/photodune.png" alt />
-                                </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                <div className="brand-logo">
-                                    <img src="images/activeden.png" alt />
-                                </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                <div className="brand-logo">
-                                    <img src="images/envato.png" alt />
-                                </div>
-                                </a>
-                            </li>
-                            </ul>
-                        </li>
                         <li>
                             <ul className="brand_item">
                             <li>

@@ -2,20 +2,44 @@ import React, { Component } from 'react';
 import Axios from 'axios';
 import Product from './Product';
 import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 class ProductCate extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            cateId : this.props.match.params.id,
             products : [],
             showProduct : [],
             currentPage: 1,
             todosPerPage: 20
         }
-        // this.getArrProduct();
-        Axios.get('http://localhost:3000/cates/'+this.props.match.params.id)
+        // this.getProduct();       
+
+        this.handleClick = this.handleClick.bind(this);
+    }
+    componentDidUpdate(prevProps) {       
+        var catePrev = prevProps.match.params.id;
+        if (catePrev !== this.props.match.params.id){
+            this.setState({cateId : this.props.match.params.id });
+            return Axios.get('http://localhost:3000/cates/'+this.props.match.params.id)
+            .then(doc => {
+                return this.setState({
+                    products : doc.data.products,
+                    showProduct : doc.data.products
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+    }
+    componentDidMount () {
+        var cateId = this.state.cateId;
+        return Axios.get('http://localhost:3000/cates/'+cateId)
         .then(doc => {
-            this.setState({
+            return this.setState({
                 products : doc.data.products,
                 showProduct : doc.data.products
             })
@@ -24,7 +48,6 @@ class ProductCate extends Component {
             console.log(err);
         })
 
-        this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick(event) {
@@ -38,11 +61,13 @@ class ProductCate extends Component {
         this.setState({[name] : value});
     }
 
+    showMessage = () => {      
+        toast.success("Add to cart success!", {
+          position: toast.POSITION.TOP_RIGHT
+        });
+    }
+
     render() {
-        console.log(this.state.loaiSort);
-        console.log(this.state.kieuSort);
-        
-        console.log(this.state.showProduct);
         const { showProduct, currentPage, todosPerPage } = this.state;
 
         // Logic for displaying current todos
@@ -71,6 +96,7 @@ class ProductCate extends Component {
 
         return (   
             <div>
+                <ToastContainer autoClose={1500} />  
                 <div className="clearfix">
                 </div>
                 <div className="container_fullwidth">
@@ -102,13 +128,18 @@ class ProductCate extends Component {
                                                     
                             <div className="clearfix">
                             </div>
-                            <div className="row">
+                            <div className="container">
                                 {/* {this.show()} */}
 
                                 {/* <ul> */}
                                 {
                                     currentTodos.map((product,index) =>{
-                                        return <Product img={product.img} name={product.name} price={product.price} id={product._id}  />
+                                        return <Product 
+                                        showMessage = {() => this.showMessage()}
+                                        img={product.img} 
+                                        name={product.name} 
+                                        price={product.price} 
+                                        id={product._id}  />
                                     })
                                 }
                                 {/* </ul> */}
