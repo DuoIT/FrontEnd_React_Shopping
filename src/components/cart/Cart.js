@@ -57,6 +57,20 @@ class Cart extends Component {
     isChange = (event) => {
         this.setState({discountCode : event.target.value});
     }
+
+    removeAll = () => {
+        console.log('remove all');
+        Axios.delete('http://localhost:3000/cart/remove/all/'+this.decode()._id)
+        .then( res => {
+            console.log('Da delete all ')
+            console.log(res.data);  
+            return this.getCart();          
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
     render() {
         if(this.getCookie('access_token') === '') {
             return <Redirect to="/user/signin" />
@@ -127,7 +141,7 @@ class Cart extends Component {
                                         Continue Shopping
                                     </button>
                                 </Link>
-                                <button className=" pull-right"  >
+                                <button className=" pull-right" onClick={() => this.removeAll()} >
                                     Delete All
                                 </button>
                                 </td>

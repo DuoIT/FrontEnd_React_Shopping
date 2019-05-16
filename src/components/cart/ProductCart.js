@@ -13,7 +13,7 @@ class ProductCart extends Component {
     
     removeProduct = async () => {  
         console.log('remove:  '+this.props.cartId)      ;
-        await Axios.post('http://localhost:3000/cart/remove/product/',{id : this.props.cartId})
+        await Axios.delete('http://localhost:3000/cart/remove/product/'+this.props.cartId)
         .then( res => {
             console.log('Da remove ' + res);            
         })
