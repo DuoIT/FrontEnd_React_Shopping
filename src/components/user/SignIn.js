@@ -15,7 +15,7 @@ class SignIn extends Component {
                 <div className="row" style={{maxWidth: '600px', margin: '0 auto'}}>
                     {/* <div className="logo mb-3"> */}
                         <div className="col-md-12" style={{marginBottom: '30px'}}>
-                            <h1>Sign Up</h1>
+                            <h1>Sign In</h1>
                         </div>                        
                     {/* </div> */}
                     <FormSignIn />

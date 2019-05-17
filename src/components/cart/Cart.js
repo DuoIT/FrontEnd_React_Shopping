@@ -12,7 +12,11 @@ class Cart extends Component {
             redirect : false,
             userId : '',
             cart : [],
-            discountCode : ''
+            disCountCode : '',
+            disCountValue: {},
+            disCountStatus : 0,
+            total: 0,
+            grandTotal: 0,
         }
         if(this.getCookie('access_token') !== '') this.getCart();
     }
@@ -45,17 +49,26 @@ class Cart extends Component {
         const user = this.decode();
         return Axios.post('http://localhost:3000/cart', {userId: user._id})
         .then(doc => {
-            return this.setState({
+            this.setState({
                 cart : doc.data.cart
             })
+            return this.total();
         })
         .catch(err => {
             console.log(err);
         })
     }
 
-    isChange = (event) => {
-        this.setState({discountCode : event.target.value});
+    isChange = async (event) => {
+        const value = event.target.value;
+        console.log(value);        
+        await this.setState({disCountCode : value });
+
+        if(value === '') {
+            return this.setState({disCountStatus : 0 });
+        }
+        // else
+         return this.getdisCountCode();
     }
 
     removeAll = () => {
@@ -64,21 +77,73 @@ class Cart extends Component {
         .then( res => {
             console.log('Da delete all ')
             console.log(res.data);  
-            return this.getCart();          
+            return this.getCart();         
         })
         .catch(err => {
             console.log(err);
         })
     }
 
-    render() {
+    getdisCountCode = async () => {        
+        // e.preventDefault();
+        await Axios.post('http://localhost:3000/cart/disCountCode', {disCountCode: this.state.disCountCode})
+        .then(res=> {
+            console.log(res.data.doc);
+            this.setState({disCountValue: res.data.doc, disCountStatus: res.status});
+        })
+        .catch(err => {
+            console.log(err.response.data)
+            this.setState({disCountValue: err.response.data, disCountStatus: err.response.status});
+        });
+    }
+
+    applyCode = (e) => {        
+        e.preventDefault();
+        if(this.state.disCountStatus === 200) {
+            this.setState({grandTotal: this.state.total - this.state.disCountValue.reduced})
+            const cancel = document.getElementById('cancel');
+            cancel.style.display = 'inline';
+        }
+        
+    }
+
+    cancelApplyCode = (e) => {   
+        e.preventDefault();
+        const cancel = document.getElementById('cancel');
+        cancel.style.display = 'none';
+
+        const input = document.getElementById('inputCode');
+        input.value = "";
+        this.setState({
+            grandTotal : this.state.grandTotal + this.state.disCountValue.reduced,
+            disCountCode : '',
+            disCountStatus : 0,
+            disCountValue : {}
+        });
+
+    }
+
+    total = () => {
+        var total = 0;
+        this.state.cart.map(doc => {
+            total += doc.price*doc.qty;
+        });
+        return this.setState({total: total, grandTotal: total});
+    }
+    render() {        
         if(this.getCookie('access_token') === '') {
             return <Redirect to="/user/signin" />
         }
-        var total = 0;
-        // this.state.cart.map(doc => {
-        //     total += doc.price;
-        // })
+        
+        var message = undefined;     
+        
+        if(this.state.disCountStatus === 0) {
+            message =  <label>Enter your coupon code if you have one</label>
+        } else if(this.state.disCountStatus === 500) {
+            message =  <label>{this.state.disCountValue.err}</label>
+        } else if(this.state.disCountStatus === 200) {
+            message =  <label>Giam {this.state.disCountValue.reduced}d</label>
+        }
 
         return (
             <div>
@@ -119,7 +184,6 @@ class Cart extends Component {
                             <tbody>                                
                                 {
                                     this.state.cart.map(doc => {
-                                        total += doc.price;
                                         return <ProductCart 
                                             img={doc.img} 
                                             name={doc.name} 
@@ -156,15 +220,16 @@ class Cart extends Component {
                                 <h5>
                                     Discount Codes
                                 </h5>
-                                <form>
-                                <label>
-                                    Enter your coupon code if you have one
-                                </label>
-                                <input onChange={(e) => this.isChange(e)} type="text" name="discountCode" />
+                                <form>                                
+                                    {message}
+                                <input id="inputCode" onChange={(e) => this.isChange(e)} type="text" name="disCountCode" />
                                 <div className="clearfix">
                                 </div>
-                                <button>
-                                    Get A Qoute
+                                <button onClick={(e) => this.applyCode(e)} >
+                                    Apply
+                                </button>
+                                <button className="pull-right" id="cancel" style={{display: 'none'}} onClick={(e) => this.cancelApplyCode(e)} >
+                                    Cancel
                                 </button>
                                 </form>
                             </div>
@@ -176,7 +241,7 @@ class Cart extends Component {
                                     Sub Total
                                 </h5>
                                 <span>
-                                    {total}
+                                    {this.state.total}
                                 </span>
                                 </div>
                                 <div className="grandtotal">
@@ -184,7 +249,7 @@ class Cart extends Component {
                                     GRAND TOTAL 
                                 </h5>
                                 <span>
-                                    {total}
+                                    {this.state.grandTotal}
                                 </span>
                                 </div>
                                 <button>

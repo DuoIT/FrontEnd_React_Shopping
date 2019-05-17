@@ -28,13 +28,14 @@ class ProductCart extends Component {
         const value = event.target.value;
         await this.setState({[name] : value});
         // this.props.productId, {userId: this.props.userId , qty : parseInt(this.state.qty)}
-        return Axios.post('http://localhost:3000/cart/product/'+this.props.cartId, {qty: this.state.qty})
+        Axios.post('http://localhost:3000/cart/product/'+this.props.cartId, {qty: this.state.qty})
         .then(res => {
             console.log(res.status);
         })
         .catch(err => {
             console.log(err.response.data);
-        })
+        })         
+        return this.props.getCart();             
     }
 
     postQty = () => {
